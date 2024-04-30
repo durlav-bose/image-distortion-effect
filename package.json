@@ -1,19 +1,22 @@
 {
-  "name": "rgb-split",
+  "name": "image-distortion-scroll-effect",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite", 
+    "build": "vite build", 
+    "serve": "vite preview"
   },
+  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "three": "^0.127.0"
-  },
   "devDependencies": {
-    "glslify-bundle": "^5.1.1",
-    "glslify-deps": "^1.3.2"
+    "vite": "^5.2.10",
+    "vite-plugin-glsl": "^1.3.0"
+  },
+  "dependencies": {
+    "three": "^0.164.0"
   }
 }
