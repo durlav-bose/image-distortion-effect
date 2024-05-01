@@ -139,9 +139,7 @@ class MeshItem {
         this.material = new THREE.ShaderMaterial({
             uniforms: this.uniforms,
             vertexShader: vertexShader,
-            fragmentShader: fragmentShader,
-            transparent: true,
-            side: THREE.DoubleSide
+            transparent: true
         });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.getDimensions();

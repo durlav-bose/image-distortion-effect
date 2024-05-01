@@ -1,13 +1,3 @@
-// uniform sampler2D uTexture;
-// uniform float uAlpha;
-// uniform vec2 uOffset;
-// varying vec2 vUv;
-
-// void main(){
-//     gl_FragColor = vec4(255.,255.,255.,255.);
-// }
-
-
  uniform sampler2D uTexture;
  uniform float uAlpha;
  uniform vec2 uOffset;
