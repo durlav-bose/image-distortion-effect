@@ -78,108 +78,108 @@
 // animate();
 
 
-import * as THREE from 'three';
+// import * as THREE from 'three';
 
-// Scene setup
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(0, 0, 10);
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+// // Scene setup
+// const scene = new THREE.Scene();
+// const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+// camera.position.set(0, 0, 10);
+// const renderer = new THREE.WebGLRenderer();
+// renderer.setSize(window.innerWidth, window.innerHeight);
+// document.body.appendChild(renderer.domElement);
 
-// Plane geometry setup
-const geometry = new THREE.PlaneGeometry(10, 5, 4, 1);
-const texture = new THREE.TextureLoader().load('../images/girl.jpg');
-const material = new THREE.MeshBasicMaterial({ map: texture });
-const plane = new THREE.Mesh(geometry, material);
-scene.add(plane);
+// // Plane geometry setup
+// const geometry = new THREE.PlaneGeometry(10, 5, 4, 1);
+// const texture = new THREE.TextureLoader().load('../images/girl.jpg');
+// const material = new THREE.MeshBasicMaterial({ map: texture });
+// const plane = new THREE.Mesh(geometry, material);
+// scene.add(plane);
 
-const controlPointsTop = [
-    new THREE.Vector3(-5, 2.5, 0),  // Left
-    new THREE.Vector3(0, 5, 0),     // Middle top
-    new THREE.Vector3(5, 2.5, 0)    // Right
-];
+// const controlPointsTop = [
+//     new THREE.Vector3(-5, 2.5, 0),  // Left
+//     new THREE.Vector3(0, 5, 0),     // Middle top
+//     new THREE.Vector3(5, 2.5, 0)    // Right
+// ];
 
-const controlPointsBottom = [
-    new THREE.Vector3(-5, -2.5, 0),  // Left
-    new THREE.Vector3(0, -5, 0),     // Middle bottom
-    new THREE.Vector3(5, -2.5, 0)    // Right
-];
+// const controlPointsBottom = [
+//     new THREE.Vector3(-5, -2.5, 0),  // Left
+//     new THREE.Vector3(0, -5, 0),     // Middle bottom
+//     new THREE.Vector3(5, -2.5, 0)    // Right
+// ];
 
-function updateCurves() {
-    const curveTop = new THREE.CubicBezierCurve3(
-        controlPointsTop[0],
-        controlPointsTop[1],
-        controlPointsTop[1],
-        controlPointsTop[2]
-    );
-    const curveBottom = new THREE.CubicBezierCurve3(
-        controlPointsBottom[0],
-        controlPointsBottom[1],
-        controlPointsBottom[1],
-        controlPointsBottom[2]
-    );
+// function updateCurves() {
+//     const curveTop = new THREE.CubicBezierCurve3(
+//         controlPointsTop[0],
+//         controlPointsTop[1],
+//         controlPointsTop[1],
+//         controlPointsTop[2]
+//     );
+//     const curveBottom = new THREE.CubicBezierCurve3(
+//         controlPointsBottom[0],
+//         controlPointsBottom[1],
+//         controlPointsBottom[1],
+//         controlPointsBottom[2]
+//     );
 
-    const topPoints = curveTop.getPoints(4);
-    const bottomPoints = curveBottom.getPoints(4);
+//     const topPoints = curveTop.getPoints(4);
+//     const bottomPoints = curveBottom.getPoints(4);
 
-    topPoints.forEach((point, i) => {
-        plane.geometry.attributes.position.setXYZ(i, point.x, point.y, point.z);
-        const geometry = new THREE.SphereGeometry(0.1);
-        const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-        const sphere = new THREE.Mesh(geometry, material);
-        sphere.position.copy(point);
-        scene.add(sphere);
-    });
-    bottomPoints.forEach((point, i) => {
-        plane.geometry.attributes.position.setXYZ(i + 5, point.x, point.y, point.z);
-        const geometry = new THREE.SphereGeometry(0.1);
-        const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-        const sphere = new THREE.Mesh(geometry, material);
-        sphere.position.copy(point);
-        scene.add(sphere);
-    });
+//     topPoints.forEach((point, i) => {
+//         plane.geometry.attributes.position.setXYZ(i, point.x, point.y, point.z);
+//         const geometry = new THREE.SphereGeometry(0.1);
+//         const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+//         const sphere = new THREE.Mesh(geometry, material);
+//         sphere.position.copy(point);
+//         scene.add(sphere);
+//     });
+//     bottomPoints.forEach((point, i) => {
+//         plane.geometry.attributes.position.setXYZ(i + 5, point.x, point.y, point.z);
+//         const geometry = new THREE.SphereGeometry(0.1);
+//         const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+//         const sphere = new THREE.Mesh(geometry, material);
+//         sphere.position.copy(point);
+//         scene.add(sphere);
+//     });
 
-    plane.geometry.attributes.position.needsUpdate = true;
-}
+//     plane.geometry.attributes.position.needsUpdate = true;
+// }
 
-updateCurves();
-let moveAmount = 0;
-console.log('plane :>> ', plane);
+// updateCurves();
+// let moveAmount = 0;
+// console.log('plane :>> ', plane);
 
-// Update function
-function updatePlane() {
-    const positions = plane.geometry.attributes.position;
-    const array = positions.array;
+// // Update function
+// function updatePlane() {
+//     const positions = plane.geometry.attributes.position;
+//     const array = positions.array;
 
-    for (let i = 0; i < array.length; i += 3) {
-        const x = array[i];
-        if (x > 0) {
-            // Move right side vertices to the right
-            array[i] += moveAmount;
-        } else if (x < 0) {
-            // Move left side vertices to the left
-            array[i] -= moveAmount;
-        }
-    }
+//     for (let i = 0; i < array.length; i += 3) {
+//         const x = array[i];
+//         if (x > 0) {
+//             // Move right side vertices to the right
+//             array[i] += moveAmount;
+//         } else if (x < 0) {
+//             // Move left side vertices to the left
+//             array[i] -= moveAmount;
+//         }
+//     }
 
-    positions.needsUpdate = true;
-}
+//     positions.needsUpdate = true;
+// }
 
-// Render loop
-function animate() {
-    requestAnimationFrame(animate);
+// // Render loop
+// function animate() {
+//     requestAnimationFrame(animate);
 
-    updateCurves();
-    // Example dynamic change (could be tied to mouse or slider)
-    moveAmount = 0.3 * Math.sin(Date.now() * 0.0000001); // Simple oscillation for demonstration
+//     updateCurves();
+//     // Example dynamic change (could be tied to mouse or slider)
+//     moveAmount = 0.3 * Math.sin(Date.now() * 0.0000001); // Simple oscillation for demonstration
 
-    updatePlane();
-    renderer.render(scene, camera);
-}
+//     updatePlane();
+//     renderer.render(scene, camera);
+// }
 
-animate();
+// animate();
 
 
 
@@ -235,3 +235,41 @@ animate();
 // }
 
 // animate();
+
+
+
+
+import * as THREE from 'three';
+
+// Scene setup
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.z = 5;
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// Load the texture (image)
+const loader = new THREE.TextureLoader();
+const texture = loader.load('../images/murkho.jpg', function (tex) {
+    tex.wrapS = tex.wrapT = THREE.ClampToEdgeWrapping;
+    tex.repeat.set(0.5, 0.5);  // Adjust these values to control the visible portion of the image
+});
+
+// Create a plane geometry that is smaller than the texture
+const geometry = new THREE.PlaneGeometry(2, 2);  // Adjust size as needed
+
+// Create a material with the texture
+const material = new THREE.MeshBasicMaterial({ map: texture });
+
+// Create a mesh with the geometry and material
+const plane = new THREE.Mesh(geometry, material);
+scene.add(plane);
+
+// Render loop
+function animate() {
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+}
+
+animate();
