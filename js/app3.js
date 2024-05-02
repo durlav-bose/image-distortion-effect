@@ -59,7 +59,7 @@ function initializeScene(texture) {
     0.01,
     10
   );
-  camera.position.z = 1;
+  camera.position.z = 2;
 
   //   uniforms
   let shaderUniforms = {
@@ -79,6 +79,25 @@ function initializeScene(texture) {
   );
 
   console.log('planeMesh ===== ', planeMesh);
+
+  let controlPoints = [];
+
+  let count = planeMesh.geometry.attributes.position.count;
+  for (let i = 0; i < count; i++) {
+    let x = planeMesh.geometry.attributes.position.getX(i);
+    let y = planeMesh.geometry.attributes.position.getY(i);
+    let z = planeMesh.geometry.attributes.position.getZ(i);
+    
+
+    let point = new THREE.Vector3(x, y, z);
+    controlPoints.push(point);
+
+    const cpGeometry = new THREE.SphereGeometry(0.01, 32, 32);
+    const cpMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    const cpMesh = new THREE.Mesh(cpGeometry, cpMaterial);
+    cpMesh.position.set(x, y, z);
+    scene.add(cpMesh);
+  }
 
   //   add mesh to scene
   scene.add(planeMesh);

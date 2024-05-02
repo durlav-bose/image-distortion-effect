@@ -1,81 +1,81 @@
-// import * as THREE from 'three';
+import * as THREE from 'three';
 
-// // Setup the basic scene
-// const scene = new THREE.Scene();
-// const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-// camera.position.set(0, 0, 10);
-// const renderer = new THREE.WebGLRenderer();
-// renderer.setSize(window.innerWidth, window.innerHeight);
-// document.body.appendChild(renderer.domElement);
+// Setup the basic scene
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(0, 0, 10);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
-// // Create a plane geometry
-// const geometry = new THREE.PlaneGeometry(5, 10, 10, 1);  // Width, height, width segments, height segments
-// const material = new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('https://threejs.org/examples/textures/uv_grid_opengl.jpg')});
-// const plane = new THREE.Mesh(geometry, material);
-// scene.add(plane);
+// Create a plane geometry
+const geometry = new THREE.PlaneGeometry(5, 10, 20, 1);  // Width, height, width segments, height segments
+const material = new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('https://threejs.org/examples/textures/uv_grid_opengl.jpg')});
+const plane = new THREE.Mesh(geometry, material);
+scene.add(plane);
 
-// // Define control points
-// const controlPointsTop = [
-//     new THREE.Vector3(-5, 2.5, 0),  // Left
-//     new THREE.Vector3(0, 5, 0),     // Middle top
-//     new THREE.Vector3(5, 2.5, 0)    // Right
-// ];
-// const controlPointsBottom = [
-//     new THREE.Vector3(-5, -2.5, 0),  // Left
-//     new THREE.Vector3(0, -5, 0),     // Middle bottom
-//     new THREE.Vector3(5, -2.5, 0)    // Right
-// ];
+// Define control points
+const controlPointsTop = [
+    new THREE.Vector3(-5, 2.5, 0),  // Left
+    new THREE.Vector3(0, 5, 0),     // Middle top
+    new THREE.Vector3(5, 2.5, 0)    // Right
+];
+const controlPointsBottom = [
+    new THREE.Vector3(-5, -2.5, 0),  // Left
+    new THREE.Vector3(0, -5, 0),     // Middle bottom
+    new THREE.Vector3(5, -2.5, 0)    // Right
+];
 
-// // Function to update the top and bottom curves
-// function updateCurves() {
-//     const curveTop = new THREE.CubicBezierCurve3(
-//         controlPointsTop[0],
-//         controlPointsTop[1],
-//         controlPointsTop[1],  // Control point used twice for symmetry
-//         controlPointsTop[2]
-//     );
-//     const curveBottom = new THREE.CubicBezierCurve3(
-//         controlPointsBottom[0],
-//         controlPointsBottom[1],
-//         controlPointsBottom[1],  // Control point used twice for symmetry
-//         controlPointsBottom[2]
-//     );
+// Function to update the top and bottom curves
+function updateCurves() {
+    const curveTop = new THREE.CubicBezierCurve3(
+        controlPointsTop[0],
+        controlPointsTop[1],
+        controlPointsTop[1],  // Control point used twice for symmetry
+        controlPointsTop[2]
+    );
+    const curveBottom = new THREE.CubicBezierCurve3(
+        controlPointsBottom[0],
+        controlPointsBottom[1],
+        controlPointsBottom[1],  // Control point used twice for symmetry
+        controlPointsBottom[2]
+    );
     
-//     const topPoints = curveTop.getPoints(10);
-//     const bottomPoints = curveBottom.getPoints(10);
+    const topPoints = curveTop.getPoints(20);
+    const bottomPoints = curveBottom.getPoints(20);
 
-//     // console.log('topPoints :>> ', topPoints);
-//     // console.log('bottomPoints :>> ', bottomPoints);
-//     // console.log('plane.geometry.attributes :>> ', plane.geometry.attributes.position);
+    // console.log('topPoints :>> ', topPoints);
+    // console.log('bottomPoints :>> ', bottomPoints);
+    // console.log('plane.geometry.attributes :>> ', plane.geometry.attributes.position);
     
-//     topPoints.forEach((point, i) => {
-//         plane.geometry.attributes.position.setXYZ(i, point.x, point.y, point.z);
-//     });
-//     bottomPoints.forEach((point, i) => {
-//         plane.geometry.attributes.position.setXYZ(i + 11, point.x, point.y, point.z);
-//     });
-//     plane.geometry.attributes.position.needsUpdate = true;
-// }
+    topPoints.forEach((point, i) => {
+        plane.geometry.attributes.position.setXYZ(i, point.x, point.y, point.z);
+    });
+    bottomPoints.forEach((point, i) => {
+        plane.geometry.attributes.position.setXYZ(i + 21, point.x, point.y, point.z);
+    });
+    plane.geometry.attributes.position.needsUpdate = true;
+}
 
-// // Initial update
-// updateCurves();
-// // Render loop
-// function animate() {
-//     requestAnimationFrame(animate);
-//     // make thhe curves update
-//     let time = Date.now() * 0.001;
-//     controlPointsTop[1].y = 2.5 + Math.sin(time) * 2.5; // Oscillate the middle top control point
-//     // controlPointsBottom[1].y = -2.5 + Math.cos(time + Math.PI) * 2.5; // Oscillate the middle bottom control point inversely
+// Initial update
+updateCurves();
+// Render loop
+function animate() {
+    requestAnimationFrame(animate);
+    // make thhe curves update
+    let time = Date.now() * 0.001;
+    controlPointsTop[1].y = 2.5 + Math.sin(time) * 2.5; // Oscillate the middle top control point
+    // controlPointsBottom[1].y = -2.5 + Math.cos(time + Math.PI) * 2.5; // Oscillate the middle bottom control point inversely
   
-//     controlPointsBottom[1].y = -2.5 + Math.sin(time) * 2.5; // Oscillate the middle bottom control point inversely
-//     console.log('controlPointsTop[1].y :>> ', controlPointsTop[1].y);
-//     console.log('controlPointsBottom[1].y :>> ', controlPointsBottom[1].y);
+    controlPointsBottom[1].y = -2.5 + Math.sin(time) * 2.5; // Oscillate the middle bottom control point inversely
+    console.log('controlPointsTop[1].y :>> ', controlPointsTop[1].y);
+    console.log('controlPointsBottom[1].y :>> ', controlPointsBottom[1].y);
 
-//     updateCurves();
-//     renderer.render(scene, camera);
-// }
+    updateCurves();
+    renderer.render(scene, camera);
+}
 
-// animate();
+animate();
 
 
 // import * as THREE from 'three';
@@ -89,7 +89,7 @@
 // document.body.appendChild(renderer.domElement);
 
 // // Plane geometry setup
-// const geometry = new THREE.PlaneGeometry(10, 5, 4, 1);
+// const geometry = new THREE.PlaneGeometry(10, 5, 10, 4);
 // const texture = new THREE.TextureLoader().load('../images/girl.jpg');
 // const material = new THREE.MeshBasicMaterial({ map: texture });
 // const plane = new THREE.Mesh(geometry, material);
@@ -133,7 +133,7 @@
 //         scene.add(sphere);
 //     });
 //     bottomPoints.forEach((point, i) => {
-//         plane.geometry.attributes.position.setXYZ(i + 5, point.x, point.y, point.z);
+//         plane.geometry.attributes.position.setXYZ(i + 44, point.x, point.y, point.z);
 //         const geometry = new THREE.SphereGeometry(0.1);
 //         const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 //         const sphere = new THREE.Mesh(geometry, material);
@@ -175,7 +175,7 @@
 //     // Example dynamic change (could be tied to mouse or slider)
 //     moveAmount = 0.3 * Math.sin(Date.now() * 0.0000001); // Simple oscillation for demonstration
 
-//     updatePlane();
+//     // updatePlane();
 //     renderer.render(scene, camera);
 // }
 
@@ -239,37 +239,39 @@
 
 
 
-import * as THREE from 'three';
+// import * as THREE from 'three';
 
-// Scene setup
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.z = 5;
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+// // Scene setup
+// const scene = new THREE.Scene();
+// const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+// camera.position.z = 5;
+// const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+// renderer.setSize(window.innerWidth, window.innerHeight);
+// document.body.appendChild(renderer.domElement);
 
-// Load the texture (image)
-const loader = new THREE.TextureLoader();
-const texture = loader.load('../images/murkho.jpg', function (tex) {
-    tex.wrapS = tex.wrapT = THREE.ClampToEdgeWrapping;
-    tex.repeat.set(0.5, 0.5);  // Adjust these values to control the visible portion of the image
-});
+// // Load the texture (image)
+// const loader = new THREE.TextureLoader();
+// const texture = loader.load('../images/murkho.jpg', function (tex) {
+//     console.log('tex :>> ', tex);
+//     console.log('THREE.ClampToEdgeWrapping :>> ', THREE.ClampToEdgeWrapping);
+//     tex.wrapS = tex.wrapT = THREE.ClampToEdgeWrapping;
+//     tex.repeat.set(.1, .1);  // Adjust these values to control the visible portion of the image
+// });
 
-// Create a plane geometry that is smaller than the texture
-const geometry = new THREE.PlaneGeometry(2, 2);  // Adjust size as needed
+// // Create a plane geometry that is smaller than the texture
+// const geometry = new THREE.PlaneGeometry(2, 2);  // Adjust size as needed
 
-// Create a material with the texture
-const material = new THREE.MeshBasicMaterial({ map: texture });
+// // Create a material with the texture
+// const material = new THREE.MeshBasicMaterial({ map: texture });
 
-// Create a mesh with the geometry and material
-const plane = new THREE.Mesh(geometry, material);
-scene.add(plane);
+// // Create a mesh with the geometry and material
+// const plane = new THREE.Mesh(geometry, material);
+// scene.add(plane);
 
-// Render loop
-function animate() {
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
-}
+// // Render loop
+// function animate() {
+//     requestAnimationFrame(animate);
+//     renderer.render(scene, camera);
+// }
 
-animate();
+// animate();
