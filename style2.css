@@ -15,3 +15,10 @@ body {
   canvas {
     display: block;
   }
+
+  #btn-container {
+    position: absolute;
+    top: 5%;
+    right: 20px;
+    cursor: pointer;
+  }
