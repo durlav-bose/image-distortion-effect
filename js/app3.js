@@ -25,31 +25,27 @@ const vertexShader = `
     }
 `;
 
-// const fragmentShader = `
-//     varying vec2 vUv;
-//     uniform sampler2D u_texture;    
-//     uniform vec2 u_cumulativeDistortion;
-
-//     void main() {
-//         vec2 uv = vUv + u_cumulativeDistortion;
-//         gl_FragColor = texture2D(u_texture, uv);
-//     }
-// `;
-
-
-
 const fragmentShader = `
     varying vec2 vUv;
-    uniform sampler2D u_texture;    
-    uniform vec2 u_mouse;
-    uniform vec2 u_prevMouse;
-    uniform vec2 u_cumulativeDistortion;
+    uniform sampler2D u_texture;
+    uniform vec2 u_mouse; // Current mouse position in normalized coordinates
+    uniform vec2 u_cumulativeDistortion; // The accumulated distortion
 
     void main() {
-      vec2 uv = vUv + u_cumulativeDistortion * 0.05; // Scale down the effect
-      gl_FragColor = texture2D(u_texture, uv);
+        // Calculate vector from current UV to the mouse position
+        vec2 dir = vUv - u_mouse;
+
+        // Calculate distortion strength based on the distance to the mouse position
+        float dist = length(dir);
+        float power = exp(-dist * 20.0); // Adjust '20.0' to change the falloff of the distortion
+
+        // Apply distortion
+        vec2 distortedUv = vUv + normalize(dir) * u_cumulativeDistortion * power;
+        
+        gl_FragColor = texture2D(u_texture, distortedUv);
     }
 `;
+
 
 
 function initializeScene(texture) {
@@ -123,17 +119,27 @@ animateScene();
 function animateScene() {
   requestAnimationFrame(animateScene);
 
-if (isDragging) {
-  let targetDistortion = new THREE.Vector2(mousePosition.x - prevPosition.x, mousePosition.y - prevPosition.y);
-        
-        // Apply easing to move towards the target distortion smoothly
-        cumulativeDistortion.lerp(targetDistortion, 0.9);  // '0.1' is the easing factor, adjust as needed
+  if (isDragging) {
+      // Calculate the direction and strength of the distortion
+      let dx = (mousePosition.x - prevPosition.x);
+      let dy = (mousePosition.y - prevPosition.y);
+      let currentDistortion = new THREE.Vector2(dx, dy);
 
-        // Update the shader uniform
-        planeMesh.material.uniforms.u_cumulativeDistortion.value.copy(cumulativeDistortion);
+      // Gradually apply distortion
+      cumulativeDistortion.lerp(currentDistortion, 0.1);
+
+      // Update uniforms
+      planeMesh.material.uniforms.u_mouse.value.set(mousePosition.x, mousePosition.y);
+      planeMesh.material.uniforms.u_cumulativeDistortion.value.copy(cumulativeDistortion);
+  }
+
+  renderer.render(scene, camera);
 }
 
-    renderer.render(scene, camera);
+function updateMousePosition(event) {
+  const rect = imageContainer.getBoundingClientRect();
+  mousePosition.x = (event.clientX - rect.left) / rect.width;
+  mousePosition.y = (event.clientY - rect.top) / rect.height;
 }
 
 
@@ -161,13 +167,3 @@ imageContainer.addEventListener('mouseup', function(event) {
     aberrationIntensity = 0.0; // Reset or reduce the distortion
 });
 
-function updateMousePosition(event) {
-    // const rect = imageContainer.getBoundingClientRect();
-    // mousePosition.x = (event.clientX - rect.left) / rect.width;
-    // mousePosition.y = (event.clientY - rect.top) / rect.height;
-
-    const rect = imageContainer.getBoundingClientRect();
-    // Scale down mouse movement impact
-    mousePosition.x = (event.clientX - rect.left) / rect.width;
-    mousePosition.y = (event.clientY - rect.top) / rect.height;
-}
