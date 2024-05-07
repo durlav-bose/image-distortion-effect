@@ -15,12 +15,12 @@ document.body.appendChild(renderer.domElement);
 
 // Define the control points for the curves
 let controlPoints = [
-    new THREE.Vector2(-1, 1.0), // Top-Left corner control point
+    new THREE.Vector2(-2, 1.0), // Top-Left corner control point
     new THREE.Vector2(0, 1.0), // Top control point
-    new THREE.Vector2(1, 1.0), // Top-Right corner control point
-    new THREE.Vector2(1, -1.0), // Bottom-Right corner control point
+    new THREE.Vector2(2, 1.0), // Top-Right corner control point
+    new THREE.Vector2(2, -1.0), // Bottom-Right corner control point
     new THREE.Vector2(0, -1), // Bottom control point
-    new THREE.Vector2(-1, -1.0), // Bottom-Left corner control point
+    new THREE.Vector2(-2, -1.0), // Bottom-Left corner control point
     new THREE.Vector2(0, 0), // Center control point
   ];
   
@@ -107,16 +107,21 @@ const vertexShader = `
     void main() {
         vUv = uv;
         vec3 pos = position;
-        float delta = pos.x - 0.0;
 
-        if(delta > 0.0 && u_distort && u_controlPoint.x > 0.0) {
-            // delta = delta / u_controlPoint.x * .055;
-            vUv.x = vUv.x + distortionFactor * delta * (u_controlPoint.x * 100.0);
-        } else if(delta < 0.0 && u_distort && u_controlPoint.x < 0.0) {
-            vUv.x = vUv.x - distortionFactor * delta * (u_controlPoint.x * 100.0);
-        }
-        
-        
+        float delta = pos.x - 0.0; // Centering delta on the control point
+
+    if (delta > 0.0 && u_distort && u_controlPoint.x > 0.0) {
+        vUv.x = vUv.x + distortionFactor * delta * (u_controlPoint.x * 25.0) * (-vUv.x + 1.0);
+    } 
+    else if (delta < 0.0 && u_distort && u_controlPoint.x < 0.0) {
+        vUv.x = vUv.x - distortionFactor * -delta * (u_controlPoint.x * 50.0) * (-vUv.x + 1.0) * -vUv.x;
+    }
+
+    // else if (delta < 0.0 && u_distort && u_controlPoint.x != 0.0) {
+    //     vUv.x = vUv.x - distortionFactor * -delta * (u_controlPoint.x * 50.0) * (-vUv.x + 1.0) * vUv.x;
+    // }
+    
+    
         gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
     }
 `;
@@ -133,7 +138,7 @@ const material = new THREE.ShaderMaterial({
     vertexShader,
     fragmentShader,
     uniforms: {
-        u_texture: { value: new THREE.TextureLoader().load('../images/girl.jpg') }, // Replace with your image path
+        u_texture: { value: new THREE.TextureLoader().load('../images/d2.png') }, // Replace with your image path
         u_controlPoint: { value: new THREE.Vector2() },
         u_distort: { value: false },
         distortionFactor: { value: 0.0 },
@@ -144,6 +149,13 @@ const mesh = new THREE.Mesh(geometry, material);
 scene.add(mesh);
 
 console.log('mesh :>> ', mesh);
+
+let uuuv = geometry.getAttribute('uv').count;
+for (let i = 0; i < uuuv; i++) {
+    console.log('uv :>> ', geometry.getAttribute('uv').getX(i));
+}
+
+
 
 
 // create the border
@@ -207,7 +219,7 @@ function onMouseMove(event) {
 }
 
 function updateControlPointPosition(newPosition) {
-    console.log('newPosition :>> ', newPosition);
+    console.log('newPosition x ===== ', newPosition.x);
     material.uniforms.u_controlPoint.value.x = newPosition.x;
     material.uniforms.u_controlPoint.value.y = newPosition.y;
     material.uniforms.u_controlPoint.value.z = 0; // Assuming z is 0 for a 2D plane distortion
@@ -219,7 +231,7 @@ function updateControlPointPosition(newPosition) {
     } else {
         distancex = controlPoints[2].x - controlPoints[6].x;
     }
-    material.uniforms.distortionFactor.value = -.05 / distancex / 50;
+    material.uniforms.distortionFactor.value = -.05 / distancex * .5;
     material.uniformsNeedUpdate = true; // This line ensures that the changes are picked up
 }
 
